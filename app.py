@@ -27,6 +27,18 @@ app.layout = html.Div([
         ),
         style = {'width': '365px'}
     ),
+    # useRTH, Whether (1) or not (0) to retrieve data generated only within
+    # Regular Trading Hours (RTH)
+    html.H4("Select value for Regular Trading Hours (RTH):"),
+    html.Div(
+        dcc.RadioItems(id='user-RTH',         options=[
+            {'label': 'True', 'value': True},
+            {'label': 'False', 'value': False}
+        ],
+        value=True),
+
+    ),
+
     html.H4("Select value for endDateTime:"),
     html.Div(
         children = [
@@ -145,10 +157,11 @@ app.layout = html.Div([
     #   of 'currency-input' at the time the button was pressed DOES get passed in.
     [State('currency-input', 'value'), State('what-to-show', 'value'),
      State('edt-date', 'date'), State('edt-hour', 'value'),
-     State('edt-minute', 'value'), State('edt-second', 'value')]
+     State('edt-minute', 'value'), State('edt-second', 'value'),
+     State('user-RTH', 'value')]
 )
 def update_candlestick_graph(n_clicks, currency_string, what_to_show,
-                             edt_date, edt_hour, edt_minute, edt_second):
+                             edt_date, edt_hour, edt_minute, edt_second, user_RTH):
     print(currency_string)
     # n_clicks doesn't
     # get used, we only include it for the dependency.
@@ -184,7 +197,7 @@ def update_candlestick_graph(n_clicks, currency_string, what_to_show,
         durationStr='30 D',       # <-- make a reactive input
         barSizeSetting='1 hour',  # <-- make a reactive input
         whatToShow=what_to_show,
-        useRTH=True,               # <-- make a reactive input
+        useRTH=user_RTH,
         #formatDate = 1, keepUpToDate = False, chartOptions = []
     )
     # # # Make the candlestick figure
@@ -211,18 +224,18 @@ def update_candlestick_graph(n_clicks, currency_string, what_to_show,
     # df = pd.read_csv(
     #     'https://raw.githubusercontent.com/plotly/datasets/master/finance-charts-apple.csv'
     # )
-    df = cph
-    fig = go.Figure(
-        data=[
-            go.Candlestick(
-                x=df['date'],
-                open=df['open'],
-                high=df['high'],
-                low=df['low'],
-                close=df['close']
-            )
-        ]
-    )
+    # df = cph
+    # fig = go.Figure(
+    #     data=[
+    #         go.Candlestick(
+    #             x=df['date'],
+    #             open=df['open'],
+    #             high=df['high'],
+    #             low=df['low'],
+    #             close=df['close']
+    #         )
+    #     ]
+    # )
 
     #currency_string = 'default Apple price data fetch'
     ############################################################################

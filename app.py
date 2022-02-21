@@ -99,7 +99,7 @@ app.layout = html.Div([
         "1 day", "1 week", "1 month"], "1 hour",
             id='bar-size'
         ),
-        style={'width': '365px'}
+        style={'width': '100px'}
     ),
 
     html.H4("Select value for Duration of the plot (D=day, W=Week, M=Month, Y=Year) :"),
@@ -109,7 +109,7 @@ app.layout = html.Div([
              "3 W", "1 M", "3 M", "6 M", "1 Y", "5 Y"], "30 D",
             id='duration-str'
         ),
-        style={'width': '365px'}
+        style={'width': '100px'}
     ),
     
     html.H4("Enter a currency pair:"),
@@ -183,7 +183,7 @@ app.layout = html.Div([
      State('user-RTH', 'value'), State('bar-size', 'value'), State('duration-str', 'value')]
 )
 def update_candlestick_graph(n_clicks, currency_string, what_to_show,
-                             edt_date, edt_hour, edt_minute, edt_second, user_RTH, bar_size, duration_str ):
+                             edt_date, edt_hour, edt_minute, edt_second, user_RTH, bar_size, duration_str):
     print(currency_string)
     # n_clicks doesn't
     # get used, we only include it for the dependency.

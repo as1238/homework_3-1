@@ -1,3 +1,10 @@
+# This is an example of a test script.
+# When you've correctly coded your 'historicalData' override method in
+#  synchronous_functions.py, this script should return a dataframe that's
+#  ready to be loaded into the candlestick graph constructor.
+
+from ibapi.contract import Contract
+#from fintech_ibkr import *
 
 import pandas as pd
 from ibapi.client import EClient
@@ -61,40 +68,46 @@ class ibkr_app(EWrapper, EClient):
         print("HistoricalDataEnd. ReqId:", reqId, "from", start, "to", end)
         self.historical_data_end = reqId
 
-def fetch_managed_accounts(hostname=default_hostname, port=default_port,
-                           client_id=default_client_id):
-    app = ibkr_app()
-    app.connect(hostname, port, client_id)
-    while not app.isConnected():
-        time.sleep(0.01)
-    def run_loop():
-        app.run()
-    api_thread = threading.Thread(target=run_loop, daemon=True)
-    api_thread.start()
-    while isinstance(app.next_valid_id, type(None)):
-        time.sleep(0.01)
-    app.disconnect()
-    return app.managed_accounts
+app = ibkr_app()
+app.connect(default_hostname, default_port, default_client_id)
+while not app.isConnected():
+    time.sleep(0.01)
+def run_loop():
+    app.run()
+api_thread = threading.Thread(target=run_loop, daemon=True)
+api_thread.start()
+while isinstance(app.next_valid_id, type(None)):
+    time.sleep(0.01)
 
-def fetch_historical_data(contract, endDateTime='', durationStr='30 D',
-                          barSizeSetting='1 hour', whatToShow='MIDPOINT',
-                          useRTH=True, hostname=default_hostname,
-                          port=default_port, client_id=default_client_id):
-    app = ibkr_app()
-    app.connect(hostname, port, client_id)
-    while not app.isConnected():
-        time.sleep(0.01)
-    def run_loop():
-        app.run()
-    api_thread = threading.Thread(target=run_loop, daemon=True)
-    api_thread.start()
-    while isinstance(app.next_valid_id, type(None)):
-        time.sleep(0.01)
-    tickerId = app.next_valid_id
+
+value = "EUR.USD" # This is what your text input looks like on your app
+
+# Create a contract object
+contract = Contract()
+contract.symbol = value.split(".")[0]
+contract.secType  = 'CASH'
+contract.exchange = 'IDEALPRO'  # 'IDEALPRO' is the currency exchange.
+contract.currency = value.split(".")[1]
+
+tickerId = app.next_valid_id
     app.reqHistoricalData(
-        tickerId, contract, endDateTime, durationStr, barSizeSetting,
-        whatToShow, useRTH, formatDate=1, keepUpToDate=False, chartOptions=[])
+        tickerId, contract,   endDateTime='',
+        durationStr='30 D',       # <-- make a reactive input
+        barSizeSetting='1 hour',  # <-- make a reactive input
+        whatToShow='MIDPOINT',
+        useRTH=True,               # <-- make a reactive input
+        formatDate = 1, keepUpToDate = False, chartOptions = []
+    )
     while app.historical_data_end != tickerId:
         time.sleep(0.01)
-    app.disconnect()
-    return app.historical_data
+
+app.disconnect()
+
+app.historical_data
+# Get your historical data
+#historical_data = fetch_historical_data(contract)
+
+# Print it! This should be a dataframe that's ready to go.
+#print(historical_data)
+
+# This script is an excellent place for scratch work as you figure this out.

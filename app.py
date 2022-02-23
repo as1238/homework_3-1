@@ -9,7 +9,7 @@ import pandas as pd
 
 # Make a Dash app!
 app = dash.Dash(__name__)
-
+server = app.server
 # Define the layout.
 app.layout = html.Div([
 
@@ -126,7 +126,7 @@ app.layout = html.Div([
     html.Div(
         # The input object itself
         ["Input Currency: ", dcc.Input(
-            id='currency-input', value='AUD.CAD', type='text'
+            id='currency-input', value='USD.JPY', type='text'
         )],
         # Style it so that the submit button appears beside the input.
         style={'display': 'inline-block', 'padding-top': '5px'}
@@ -295,4 +295,4 @@ def trade(n_clicks, action, trade_currency, trade_amt): # Still don't use n_clic
 
 # Run it!
 if __name__ == '__main__':
-    app.run_server(debug=True)
+    app.run_server(host='localhost', port=3001, debug=True)
